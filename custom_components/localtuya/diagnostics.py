@@ -39,6 +39,8 @@ async def async_get_config_entry_diagnostics(
         local_key = data[CLOUD_DEVICES][dev_id][CONF_LOCAL_KEY]
         local_key_obfuscated = f"{local_key[0:3]}...{local_key[-3:]}"
         data[CLOUD_DEVICES][dev_id][CONF_LOCAL_KEY] = local_key_obfuscated
+        data[CLOUD_DEVICES][dev_id]["device_dps"] = tuya_api.device_dps
+        data[CLOUD_DEVICES][dev_id]["data_model"] = tuya_api.data_model
     return data
 
 
