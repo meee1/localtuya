@@ -1,6 +1,6 @@
 {
   "domain": "localtuya",
-  "name": "LocalTuya integration",
+  "name": "LocalTuya integration - custom",
   "codeowners": [
     "@meee1","@rospogrigio", "@postlund"
   ],
