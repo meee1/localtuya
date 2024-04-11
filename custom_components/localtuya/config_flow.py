@@ -323,6 +323,9 @@ async def attempt_cloud_connection(hass, user_input):
         return cloud_api, {"reason": "device_list_failed", "msg": res}
     _LOGGER.info("Cloud API connection succeeded.")
 
+    for deviceid in cloud_api.device_list:
+        res = await cloud_api.async_get_device_data_model(deviceid)
+
     return cloud_api, {}
 
 
