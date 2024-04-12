@@ -204,7 +204,7 @@ class TuyaCloudApi:
                 new_data[CONF_DEVICES][device_id]["data_model"] = json.loads(r_json["result"]["model"])
 
                 new_data[ATTR_UPDATED_AT] = str(int(time.time() * 1000))
-                hass.config_entries.async_update_entry(entry, data=new_data)
+                #hass.config_entries.async_update_entry(entry, data=new_data)
 
                 _LOGGER.debug("data_model: %s %s", device_id, new_data[CONF_DEVICES][device_id]["data_model"])
             except Exception as e:
