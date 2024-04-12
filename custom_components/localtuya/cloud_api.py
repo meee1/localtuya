@@ -8,6 +8,8 @@ import time
 
 import requests
 
+from .common import TuyaDevice, async_config_entry_by_device_id
+
 from homeassistant.const import (
     CONF_DEVICES
 )
