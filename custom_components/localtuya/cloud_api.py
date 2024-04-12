@@ -184,7 +184,8 @@ class TuyaCloudApi:
         try:
             self.data_model[deviceid] = {json.loads(r_json["result"]["model"])}
             _LOGGER.debug("data_model: %s %s", deviceid, self.data_model[deviceid])
-        except Exception:
+        except Exception as e:
+            print(e)
             pass
 
         return "ok"
