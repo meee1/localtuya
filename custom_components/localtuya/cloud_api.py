@@ -38,8 +38,6 @@ class TuyaCloudApi:
         self._user_id = user_id
         self._access_token = ""
         self.device_list = {}
-        self.device_dps = {}
-        self.data_model = {}
 
     def generate_payload(self, method, timestamp, url, headers, body=None):
         """Generate signed payload for requests."""
@@ -138,6 +136,9 @@ class TuyaCloudApi:
         self.device_list = {dev["id"]: dev for dev in r_json["result"]}
         # _LOGGER.debug("DEV_LIST: %s", self.device_list)
 
+        for deviceid in self.device_list:
+            res = await self.async_get_device_data_model(deviceid)
+
         return "ok"
 
     async def async_get_device_dps(self, deviceid):
@@ -156,8 +157,8 @@ class TuyaCloudApi:
             # )
             return f"Error {r_json['code']}: {r_json['msg']}"
 
-        self.device_dps[deviceid] = {r_json["result"]["properties"]}
-        _LOGGER.debug("device_dps: %s %s", deviceid, self.device_dps[deviceid])
+        self.device_list[deviceid]["device_dps"] = {r_json["result"]["properties"]}
+        _LOGGER.debug("device_dps: %s %s", deviceid, self.device_list[deviceid]["device_dps"])
 
         return "ok"
     
@@ -177,10 +178,10 @@ class TuyaCloudApi:
             # )
             return f"Error {r_json['code']}: {r_json['msg']}"
 
-        _LOGGER.debug(
-                "async_get_device_data_model, %s reply is %s", deviceid,
-                json.dumps(r_json, indent=2, ensure_ascii=False)
-        )
+        #_LOGGER.debug(
+        #        "async_get_device_data_model, %s reply is %s", deviceid,
+        #        json.dumps(r_json, indent=2, ensure_ascii=False)
+        #)
         try:
             self.device_list[deviceid]["data_model"] = json.loads(r_json["result"]["model"])
             _LOGGER.debug("data_model: %s %s", deviceid, self.device_list[deviceid]["data_model"])
