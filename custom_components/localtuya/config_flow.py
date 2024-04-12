@@ -177,9 +177,10 @@ def dps_string_list(deviceid, dps_data):
     list = []
     for id, value in dps_data.items():
         for each in self.hass.data[DOMAIN][DATA_CLOUD].device_list[deviceid]["data_model"]["services"]:
-            if each["abilityId"] == id:
-                value += " " + each["code"]
-                break
+            for each2 in each["properties"]:
+                if str(each2["abilityId"]) == id:
+                    value = f"{value} "+str(each2["code"])
+                    break
         list += [ f"{id} (value: {value})" ]
     return list
 
