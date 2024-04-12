@@ -177,7 +177,14 @@ class TuyaCloudApi:
             # )
             return f"Error {r_json['code']}: {r_json['msg']}"
 
-        self.data_model[deviceid] = {json.loads(r_json["result"]["model"])}
-        _LOGGER.debug("data_model: %s %s", deviceid, self.data_model[deviceid])
+        _LOGGER.debug(
+                "async_get_device_data_model, reply is %s",
+                json.dumps(r_json, indent=2, ensure_ascii=False)
+        )
+        try:
+            self.data_model[deviceid] = {json.loads(r_json["result"]["model"])}
+            _LOGGER.debug("data_model: %s %s", deviceid, self.data_model[deviceid])
+        except Exception:
+            pass
 
         return "ok"
