@@ -8,6 +8,10 @@ import time
 
 import requests
 
+from homeassistant.const import (
+    CONF_DEVICES
+)
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -136,9 +140,6 @@ class TuyaCloudApi:
         self.device_list = {dev["id"]: dev for dev in r_json["result"]}
         # _LOGGER.debug("DEV_LIST: %s", self.device_list)
 
-        for deviceid in self.device_list:
-            res = await self.async_get_device_data_model(deviceid)
-
         return "ok"
 
     async def async_get_device_dps(self, deviceid):
@@ -162,31 +163,50 @@ class TuyaCloudApi:
 
         return "ok"
     
-    async def async_get_device_data_model(self, deviceid):
-        resp = await self.async_make_request(
-            "GET", url=f"/v2.0/cloud/thing/{deviceid}/model"
-        )
+    async def async_get_device_data_model(self):
+                
+        for device_id in self.device_list:
+            # If device is not in cache, check if a config entry exists
+            entry = async_config_entry_by_device_id(hass, device_id)
+            if entry is None:
+                return
 
-        if not resp.ok:
-            return "Request failed, status " + str(resp.status)
+            dev_entry = entry.data[CONF_DEVICES][device_id]
 
-        r_json = resp.json()
-        if not r_json["success"]:
-            # _LOGGER.debug(
-            #     "Request failed, reply is %s",
-            #     json.dumps(r_json, indent=2, ensure_ascii=False)
-            # )
-            return f"Error {r_json['code']}: {r_json['msg']}"
+            if "data_model" in dev_entry:
+                _LOGGER.debug("data_model no update needed")
+                return
 
-        #_LOGGER.debug(
-        #        "async_get_device_data_model, %s reply is %s", deviceid,
-        #        json.dumps(r_json, indent=2, ensure_ascii=False)
-        #)
-        try:
-            self.device_list[deviceid]["data_model"] = json.loads(r_json["result"]["model"])
-            _LOGGER.debug("data_model: %s %s", deviceid, self.device_list[deviceid]["data_model"])
-        except Exception as e:
-            _LOGGER.info(e)
-            pass
+            new_data = entry.data.copy()
+
+            resp = await self.async_make_request(
+                "GET", url=f"/v2.0/cloud/thing/{deviceid}/model"
+            )
+
+            if not resp.ok:
+                return "Request failed, status " + str(resp.status)
+
+            r_json = resp.json()
+            if not r_json["success"]:
+                # _LOGGER.debug(
+                #     "Request failed, reply is %s",
+                #     json.dumps(r_json, indent=2, ensure_ascii=False)
+                # )
+                return f"Error {r_json['code']}: {r_json['msg']}"
+
+            #_LOGGER.debug(
+            #        "async_get_device_data_model, %s reply is %s", deviceid,
+            #        json.dumps(r_json, indent=2, ensure_ascii=False)
+            #)
+            try:
+                new_data[CONF_DEVICES][device_id]["data_model"] = json.loads(r_json["result"]["model"])
+
+                new_data[ATTR_UPDATED_AT] = str(int(time.time() * 1000))
+                hass.config_entries.async_update_entry(entry, data=new_data)
+
+                _LOGGER.debug("data_model: %s %s", device_id, new_data[CONF_DEVICES][device_id]["data_model"])
+            except Exception as e:
+                _LOGGER.info(e)
+                pass
 
         return "ok"
