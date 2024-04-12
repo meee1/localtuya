@@ -182,7 +182,7 @@ class TuyaCloudApi:
             #new_data = entry.data.copy()
 
             resp = await self.async_make_request(
-                "GET", url=f"/v2.0/cloud/thing/{deviceid}/model"
+                "GET", url=f"/v2.0/cloud/thing/{device_id}/model"
             )
 
             if not resp.ok:
