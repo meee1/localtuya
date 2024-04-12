@@ -172,9 +172,16 @@ def schema_defaults(schema, dps_list=None, **defaults):
     return copy
 
 
-def dps_string_list(dps_data):
+def dps_string_list(deviceid, dps_data):
     """Return list of friendly DPS values."""
-    return [f"{id} (value: {value})" for id, value in dps_data.items()]
+    list = []
+    for id, value in dps_data.items():
+        for each in self.hass.data[DOMAIN][DATA_CLOUD].device_list[deviceid]["data_model"]["services"]:
+            if each["abilityId"] == id:
+                value += " " + each["code"]
+                break
+        list += [ f"{id} (value: {value})" ]
+    return list
 
 
 def gen_dps_strings():
@@ -299,7 +306,7 @@ async def validate_input(hass: core.HomeAssistant, data):
 
     _LOGGER.debug("Total DPS: %s", detected_dps)
 
-    return dps_string_list(detected_dps)
+    return dps_string_list(data[CONF_DEVICE_ID], detected_dps)
 
 
 async def attempt_cloud_connection(hass, user_input):
