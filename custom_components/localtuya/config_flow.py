@@ -1,4 +1,5 @@
 """Config flow for LocalTuya integration integration."""
+
 import errno
 import logging
 import time
@@ -172,16 +173,16 @@ def schema_defaults(schema, dps_list=None, **defaults):
     return copy
 
 
-def dps_string_list(deviceid, dps_data):
+def dps_string_list(hass, deviceid, dps_data):
     """Return list of friendly DPS values."""
     list = []
     for id, value in dps_data.items():
-        for each in self.hass.data[DOMAIN][DATA_CLOUD].device_list[deviceid]["data_model"]["services"]:
+        for each in hass.data[DOMAIN][DATA_CLOUD].device_list[deviceid]["data_model"]["services"]:
             for each2 in each["properties"]:
                 if str(each2["abilityId"]) == id:
-                    value = f"{value} "+str(each2["code"])
+                    value = f"{value} " + str(each2["code"])
                     break
-        list += [ f"{id} (value: {value})" ]
+        list += [f"{id} (value: {value})"]
     return list
 
 
@@ -307,7 +308,7 @@ async def validate_input(hass: core.HomeAssistant, data):
 
     _LOGGER.debug("Total DPS: %s", detected_dps)
 
-    return dps_string_list(data[CONF_DEVICE_ID], detected_dps)
+    return dps_string_list(hass, data[CONF_DEVICE_ID], detected_dps)
 
 
 async def attempt_cloud_connection(hass, user_input):
