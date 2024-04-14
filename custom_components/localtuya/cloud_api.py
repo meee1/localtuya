@@ -172,48 +172,48 @@ class TuyaCloudApi:
         return "ok"
 
     async def async_get_device_data_model(self, device_id):        
-            # If device is not in cache, check if a config entry exists
-            #entry = async_config_entry_by_device_id(hass, device_id)
-            #if entry is None:
-            #    return
+        # If device is not in cache, check if a config entry exists
+        #entry = async_config_entry_by_device_id(hass, device_id)
+        #if entry is None:
+        #    return
 
-            #dev_entry = entry.data[CONF_DEVICES][device_id]
+        #dev_entry = entry.data[CONF_DEVICES][device_id]
 
-            #if "data_model" in dev_entry:
-            #    _LOGGER.debug("data_model no update needed")
-            #    return
+        #if "data_model" in dev_entry:
+        #    _LOGGER.debug("data_model no update needed")
+        #    return
 
-            #new_data = entry.data.copy()
+        #new_data = entry.data.copy()
 
-            resp = await self.async_make_request(
-                "GET", url=f"/v2.0/cloud/thing/{device_id}/model"
-            )
+        resp = await self.async_make_request(
+            "GET", url=f"/v2.0/cloud/thing/{device_id}/model"
+        )
 
-            if not resp.ok:
-                return "Request failed, status " + str(resp.status)
+        if not resp.ok:
+            return "Request failed, status " + str(resp.status)
 
-            r_json = resp.json()
-            if not r_json["success"]:
-                # _LOGGER.debug(
-                #     "Request failed, reply is %s",
-                #     json.dumps(r_json, indent=2, ensure_ascii=False)
-                # )
-                return f"Error {r_json['code']}: {r_json['msg']}"
+        r_json = resp.json()
+        if not r_json["success"]:
+            # _LOGGER.debug(
+            #     "Request failed, reply is %s",
+            #     json.dumps(r_json, indent=2, ensure_ascii=False)
+            # )
+            return f"Error {r_json['code']}: {r_json['msg']}"
 
-            #_LOGGER.debug(
-            #        "async_get_device_data_model, %s reply is %s", deviceid,
-            #        json.dumps(r_json, indent=2, ensure_ascii=False)
-            #)
-            try:
-                #new_data[CONF_DEVICES][device_id]["data_model"] = json.loads(r_json["result"]["model"])
+        #_LOGGER.debug(
+        #        "async_get_device_data_model, %s reply is %s", deviceid,
+        #        json.dumps(r_json, indent=2, ensure_ascii=False)
+        #)
+        try:
+            #new_data[CONF_DEVICES][device_id]["data_model"] = json.loads(r_json["result"]["model"])
 
-                #new_data[ATTR_UPDATED_AT] = str(int(time.time() * 1000))
-                #hass.config_entries.async_update_entry(entry, data=new_data)
+            #new_data[ATTR_UPDATED_AT] = str(int(time.time() * 1000))
+            #hass.config_entries.async_update_entry(entry, data=new_data)
 
-                self.device_list[device_id]["data_model"] = json.loads(r_json["result"]["model"])
-                _LOGGER.debug("data_model: %s %s", device_id, self.device_list[device_id]["data_model"])
-            except Exception as e:
-                _LOGGER.info(e)
-                pass
+            self.device_list[device_id]["data_model"] = json.loads(r_json["result"]["model"])
+            _LOGGER.debug("data_model: %s %s", device_id, self.device_list[device_id]["data_model"])
+        except Exception as e:
+            _LOGGER.info(e)
+            pass
 
         return "ok"
