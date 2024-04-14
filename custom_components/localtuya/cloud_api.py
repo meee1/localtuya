@@ -144,9 +144,9 @@ class TuyaCloudApi:
 
         return "ok"
 
-    async def async_get_device_dps(self, deviceid):
+    async def async_get_device_dps(self, device_id):
         resp = await self.async_make_request(
-            "GET", url=f"/v2.0/cloud/thing/{deviceid}/shadow/properties"
+            "GET", url=f"/v2.0/cloud/thing/{device_id}/shadow/properties"
         )
 
         if not resp.ok:
@@ -160,8 +160,8 @@ class TuyaCloudApi:
             # )
             return f"Error {r_json['code']}: {r_json['msg']}"
 
-        self.device_list[deviceid]["device_dps"] = {r_json["result"]["properties"]}
-        _LOGGER.debug("device_dps: %s %s", deviceid, self.device_list[deviceid]["device_dps"])
+        self.device_list[device_id]["device_dps"] = {r_json["result"]["properties"]}
+        _LOGGER.debug("device_dps: %s %s", device_id, self.device_list[device_id]["device_dps"])
 
         return "ok"
     
@@ -172,7 +172,7 @@ class TuyaCloudApi:
         return "ok"
 
     async def async_get_device_data_model(self, device_id): 
-        _LOGGER.debug("async_get_device_data_model: %s ", deviceid)   
+        _LOGGER.debug("async_get_device_data_model: %s ", device_id)   
             
         # If device is not in cache, check if a config entry exists
         #entry = async_config_entry_by_device_id(hass, device_id)
