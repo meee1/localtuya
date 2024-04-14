@@ -177,11 +177,15 @@ def dps_string_list(hass, deviceid, dps_data):
     """Return list of friendly DPS values."""
     list = []
     for id, value in dps_data.items():
-        for each in hass.data[DOMAIN][DATA_CLOUD].device_list[deviceid]["data_model"]["services"]:
-            for each2 in each["properties"]:
-                if str(each2["abilityId"]) == id:
-                    value = f"{value} " + str(each2["code"])
-                    break
+        try:
+            for each in hass.data[DOMAIN][DATA_CLOUD].device_list[deviceid]["data_model"]["services"]:
+                for each2 in each["properties"]:
+                    if str(each2["abilityId"]) == id:
+                        value = f"{value} " + str(each2["code"])
+                        break
+        except Exception as ex:
+            _LOGGER.error("dps_string_list: %s", ex);
+            pass
         list += [f"{id} (value: {value})"]
     return list
 
