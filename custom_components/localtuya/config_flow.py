@@ -559,6 +559,7 @@ class LocalTuyaOptionsFlowHandler(config_entries.OptionsFlow):
                     # self.device_data[CONF_PRODUCT_KEY] = self.devices[
                     #     self.selected_device
                     # ]["productKey"]
+                    self.hass.data[DOMAIN][DATA_CLOUD].async_get_device_data_model(dev_id)
                     cloud_devs = self.hass.data[DOMAIN][DATA_CLOUD].device_list
                     if dev_id in cloud_devs:
                         self.device_data[CONF_MODEL] = cloud_devs[dev_id].get(

@@ -165,9 +165,11 @@ class TuyaCloudApi:
 
         return "ok"
     
-    async def async_get_device_data_model(self):
-                
+    async def async_get_device_data_model_all(self):
         for device_id in self.device_list:
+            async_get_device_data_model(device_id)
+
+    async def async_get_device_data_model(self, device_id):        
             # If device is not in cache, check if a config entry exists
             #entry = async_config_entry_by_device_id(hass, device_id)
             #if entry is None:
