@@ -160,7 +160,7 @@ class TuyaCloudApi:
             # )
             return f"Error {r_json['code']}: {r_json['msg']}"
 
-        self.device_list[device_id]["device_dps"] = {r_json["result"]["properties"]}
+        self.device_list[device_id]["device_dps"] = r_json["result"]["properties"]
         _LOGGER.debug("device_dps: %s %s", device_id, self.device_list[device_id]["device_dps"])
 
         return "ok"
