@@ -558,6 +558,7 @@ class LocalTuyaOptionsFlowHandler(config_entries.OptionsFlow):
         dev_id = self.selected_device
         if user_input is not None:
             try:
+                _LOGGER.info("async_step_configure_device: %s - %s",dev_id,user_input)
                 self.device_data = user_input.copy()
                 if dev_id is not None:
                     # self.device_data[CONF_PRODUCT_KEY] = self.devices[
