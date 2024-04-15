@@ -567,11 +567,15 @@ class LocalTuyaOptionsFlowHandler(config_entries.OptionsFlow):
                     cloud_devs = self.hass.data[DOMAIN][DATA_CLOUD].device_list
                     if dev_id in cloud_devs:
                         await self.hass.data[DOMAIN][DATA_CLOUD].async_get_device_data_model(dev_id)
+                        await self.hass.data[DOMAIN][DATA_CLOUD].async_get_device_dps(dev_id)
                         self.device_data[CONF_MODEL] = cloud_devs[dev_id].get(
                             CONF_PRODUCT_NAME
                         )
                         self.device_data["data_model"] = cloud_devs[dev_id].get(
                             "data_model"
+                        )
+                        self.device_data["device_dps"] = cloud_devs[dev_id].get(
+                            "device_dps"
                         )
                 if self.editing_device:
                     if user_input[CONF_ENABLE_ADD_ENTITIES]:
